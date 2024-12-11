@@ -1,0 +1,19 @@
+/* src/styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables CSS */
+:root {
+  --background: #f9fafb; /* Color de fondo */
+  --foreground: #1f2937; /* Color de texto principal */
+  --font-montserrat: 'Montserrat', sans-serif; /* Fuente personalizada */
+}
+
+/* Aplicar las variables */
+body {
+  @apply bg-background text-foreground font-sans;
+}
+
+/* Estilos Personalizados (Opcional) */
+/* Puedes agregar estilos personalizados aquí si lo deseas */

@@ -14,7 +14,14 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@grizzly-saas-monorepo/platform-home-presentation-react": [
+        "libs/platform/home/presentation/react/src/index.ts"
+      ],
+      "@grizzly-saas-monorepo/platform-login-presentation-react": [
+        "libs/platform/login/presentation/react/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
