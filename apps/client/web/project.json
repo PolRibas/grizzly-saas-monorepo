@@ -1,0 +1,40 @@
+{
+  "name": "client-web",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/client/web/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/client/web",
+        "outputPath": "dist/apps/client/web"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "client-web:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "client-web:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "client-web:build:production",
+          "dev": false
+        }
+      }
+    }
+  },
+  "tags": []
+}

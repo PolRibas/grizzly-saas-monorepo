@@ -1,82 +1,322 @@
-# GrizzlySaasMonorepo
+# Grizzly SaaS Monorepo
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+This repository is an NX monorepo that encompasses both frontend and backend applications, along with shared libraries and cron jobs. It leverages NestJS for the backend following Domain-Driven Design (DDD) and Clean Architecture principles, and Next.js for the frontend with Tailwind CSS and Framer Motion for styling and animations. Additionally, it integrates with AI services running on local servers.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+## Table of Contents
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [1. Clone the Repository](#1-clone-the-repository)
+  - [2. Install Dependencies](#2-install-dependencies)
+  - [3. Configure Environment Variables](#3-configure-environment-variables)
+- [Running the Applications](#running-the-applications)
+  - [1. Start the Backend (BFF)](#1-start-the-backend-bff)
+  - [2. Start the Frontend](#2-start-the-frontend)
+- [Cron Jobs](#cron-jobs)
+- [Integrating with AI Services](#integrating-with-ai-services)
+- [Building for Production](#building-for-production)
+- [Testing](#testing)
+- [Security Considerations](#security-considerations)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+- [Contact](#contact)
 
-## Finish your CI setup
+## Features
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/H2hhtyMTak)
+- **Backend (BFF)**: Built with NestJS following DDD and Clean Architecture.
+- **Frontend**: Developed with Next.js, styled using Tailwind CSS, and enhanced with Framer Motion animations.
+- **Cron Jobs**: Scheduled tasks managed within the backend application.
+- **Shared Libraries**: Reusable code organized under the `libs/` directory.
+- **AI Integration**: Communicates with AI services running on local servers.
+- **Docker Support**: Each application includes a Dockerfile for containerization.
+- **CI/CD**: GitHub Actions workflows are set up for continuous integration and deployment.
 
+## Project Structure
 
-## Run tasks
-
-To run the dev server for your app, use:
-
-```sh
-npx nx serve client/bff
+```
+grizzly-saas-monorepo/
+├── apps/
+│   ├── client/
+│   │   ├── bff/          # Backend-for-Frontend (NestJS)
+│   │   │   ├── src/
+│   │   │   │   ├── app/
+│   │   │   │   │   ├── app.controller.ts
+│   │   │   │   │   ├── app.module.ts
+│   │   │   │   │   └── cron.service.ts
+│   │   │   ├── test/
+│   │   │   ├── project.json
+│   │   │   ├── tsconfig.app.json
+│   │   │   └── ...
+│   │   └── web/          # Frontend (Next.js)
+│   │       ├── components/
+│   │       │   └── AnimatedButton.jsx
+│   │       ├── pages/
+│   │       │   └── index.jsx
+│   │       ├── public/
+│   │       ├── styles/
+│   │       │   └── globals.css
+│   │       ├── tailwind.config.js
+│   │       ├── next.config.js
+│   │       ├── tsconfig.json
+│   │       ├── project.json
+│   │       └── ...
+├── libs/
+│   ├── domain/
+│   │   └── user/
+│   ├── infrastructure/
+│   │   └── adapters/
+│   └── client/
+│       └── login/
+│           ├── use-case/
+│           └── presentation/
+│               ├── react/
+│               └── nest/
+├── tools/
+├── nx.json
+├── package.json
+├── tsconfig.base.json
+└── workspace.json
 ```
 
-To create a production bundle:
+## Prerequisites
 
-```sh
-npx nx build client/bff
+Ensure you have the following installed on your machine:
+
+- **Node.js (>=14.15.0)**: [Download Here](https://nodejs.org/)
+- **npm** or **Yarn**: Preferred package manager.
+- **Git**: Version control system.
+- **Docker**: For containerizing applications (optional but recommended).
+- **NX CLI**: Install globally to access NX commands.
+
+  ```bash
+  npm install -g nx
+  ```
+
+## Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your_username/grizzly-saas-monorepo.git
+cd grizzly-saas-monorepo
 ```
 
-To see all available targets to run for a project, run:
+### 2. Install Dependencies
 
-```sh
-npx nx show project client/bff
+Install the dependencies for the entire monorepo:
+
+```bash
+npm install
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+*Alternatively, if you use Yarn:*
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/node:app demo
+```bash
+yarn install
 ```
 
-To generate a new library, use:
+### 3. Configure Environment Variables
 
-```sh
-npx nx g @nx/node:lib mylib
+Create a `.env` file in `apps/client/bff/` to store environment variables. Ensure this file is **not** committed to version control by verifying it's listed in `.gitignore`.
+
+```env
+# apps/client/bff/.env
+
+HUGGINGFACE_API_KEY=your_hugging_face_api_token_here
+AI_SERVICE_URL=http://localhost:8002/generate
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+**Notes:**
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **HUGGINGFACE_API_KEY**: Your Hugging Face API access token.
+- **AI_SERVICE_URL**: URL of your AI service (FastAPI).
 
+## Running the Applications
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### 1. Start the Backend (BFF)
 
-## Install Nx Console
+Navigate to the root of the monorepo and run:
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+```bash
+npx nx serve client-bff
+```
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Details:**
 
-## Useful links
+- **Port**: NestJS runs on port `3333` by default.
+- **CORS**: Configured to allow requests from `http://localhost:4200` (Frontend).
 
-Learn more:
+### 2. Start the Frontend
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+In another terminal, navigate to the root of the monorepo and run:
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+npx nx serve client-web
+```
+
+**Details:**
+
+- **Port**: Next.js runs on `http://localhost:4200`.
+- **Tailwind CSS and Framer Motion**: Already configured and ready to use.
+
+## Cron Jobs
+
+Cron jobs are configured within the backend (BFF) using the `@nestjs/schedule` module.
+
+### Current Configuration
+
+- **Daily Task**: Executes a request to the AI service to generate a daily news summary.
+
+**Configuration File:**
+
+```typescript
+// apps/client/bff/src/app/cron.service.ts
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import axios from 'axios';
+
+@Injectable()
+export class CronService {
+  private readonly logger = new Logger(CronService.name);
+
+  // Runs daily at midnight
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async handleDailyTask() {
+    this.logger.debug('Executing daily Llama task...');
+    try {
+      const response = await axios.post(process.env.AI_SERVICE_URL, {
+        messages: [
+          { role: 'system', content: 'You are a data aggregator.' },
+          { role: 'user', content: 'Summarize today’s news.' }
+        ],
+        max_new_tokens: 200
+      });
+      this.logger.debug('Daily summary:', response.data.generated_text);
+      // Add additional logic here, such as storing in a database or sending notifications
+    } catch (error) {
+      this.logger.error('Error executing daily Llama task:', error.message);
+    }
+  }
+}
+```
+
+## Integrating with AI Services
+
+Your frontend communicates with the Backend-for-Frontend (BFF), which in turn communicates with AI services (FastAPI).
+
+### Communication Flow
+
+1. **Frontend**: Sends a POST request to `/api/llama/generate`.
+2. **Backend (BFF)**: Receives the request and forwards it to the AI service at `http://localhost:8002/generate`.
+3. **AI Service (FastAPI)**: Processes the request and returns the response to the BFF.
+4. **Backend (BFF)**: Returns the response to the frontend.
+5. **Frontend**: Displays the response to the user.
+
+### Example Request from Frontend
+
+```javascript
+// apps/client/web/pages/index.jsx
+
+const handleGenerate = async () => {
+  try {
+    const response = await fetch('/api/llama/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messages: [
+          { role: 'system', content: 'You are a helpful assistant.' },
+          { role: 'user', content: input },
+        ],
+        max_new_tokens: 100,
+      }),
+    });
+
+    const data = await response.json();
+    setOutput(data.generated_text);
+  } catch (error) {
+    console.error('Error generating text:', error);
+  }
+};
+```
+
+## Building for Production
+
+### 1. Build the Backend
+
+```bash
+npx nx build client-bff
+```
+
+### 2. Build the Frontend
+
+```bash
+npx nx build client-web
+```
+
+### 3. Dockerization (Optional)
+
+Each application includes a `Dockerfile`. To build and run Docker containers:
+
+1. **Backend (BFF)**
+
+   ```bash
+   cd apps/client/bff
+   docker build -t grizzly-saas-bff:latest .
+   docker run -d -p 3333:3333 grizzly-saas-bff:latest
+   ```
+
+2. **Frontend**
+
+   ```bash
+   cd apps/client/web
+   docker build -t grizzly-saas-frontend:latest .
+   docker run -d -p 4200:4200 grizzly-saas-frontend:latest
+   ```
+
+**Note:** Adjust ports and configurations as needed.
+
+## Testing
+
+### Run Tests for the Backend
+
+```bash
+npx nx test client-bff
+```
+
+### Run Tests for the Frontend
+
+```bash
+npx nx test client-web
+```
+
+## Security Considerations
+
+- **Protect Your API Token:** Do not expose your `.env` file or API token in public repositories. Ensure that `.env` is listed in `.gitignore` to prevent accidental commits.
+  
+- **Docker Permissions:** Running Docker commands with `sudo` is common but consider configuring Docker to run without `sudo` for convenience and security.
+
+- **Data Privacy:** Ensure that any data processed by the service complies with relevant data privacy laws and guidelines.
+
+- **Sanitization de Entradas:** Implement measures to sanitize and validate inputs received from the frontend to prevent injections and other attacks.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Acknowledgements
+
+- [NX](https://nx.dev/) - Extensible Dev Tools for Monorepos.
+- [NestJS](https://nestjs.com/) - A progressive Node.js framework for building efficient and scalable server-side applications.
+- [Next.js](https://nextjs.org/) - The React Framework for Production.
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework.
+- [Framer Motion](https://www.framer.com/motion/) - A production-ready motion library for React.
+- [Hugging Face](https://huggingface.co/) - For providing the Llama models and the Transformers library.
+- [Docker](https://www.docker.com/) - For containerizing applications.
+
+## Contact
+
+For any questions or support, please open an issue in the repository or contact the maintainer at [your_email@example.com](mailto:your_email@example.com).

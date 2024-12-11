@@ -31,11 +31,21 @@
       }
     },
     {
-      "plugin": "@nx/jest/plugin",
+      "plugin": "@nx/next/plugin",
       "options": {
-        "targetName": "test"
-      },
-      "exclude": ["apps/client/bff-e2e/**/*"]
+        "startTargetName": "start",
+        "buildTargetName": "build",
+        "devTargetName": "dev",
+        "serveStaticTargetName": "serve-static"
+      }
     }
-  ]
+  ],
+  "generators": {
+    "@nx/next": {
+      "application": {
+        "style": "tailwind",
+        "linter": "eslint"
+      }
+    }
+  }
 }

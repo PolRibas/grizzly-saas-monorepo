@@ -1,5 +1,5 @@
 {
-  "name": "client/bff",
+  "name": "client-bff",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/client/bff/src",
   "projectType": "application",
@@ -28,15 +28,15 @@
         "build"
       ],
       "options": {
-        "buildTarget": "client/bff:build",
+        "buildTarget": "client-bff:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "client/bff:build:development"
+          "buildTarget": "client-bff:build:development"
         },
         "production": {
-          "buildTarget": "client/bff:build:production"
+          "buildTarget": "client-bff:build:production"
         }
       }
     },
@@ -44,7 +44,7 @@
       "dependsOn": [
         "build"
       ],
-      "command": "docker build -f apps/client/bff/Dockerfile . -t client/bff"
+      "command": "docker build -f apps/client-bff/Dockerfile . -t client-bff"
     }
   }
 }
